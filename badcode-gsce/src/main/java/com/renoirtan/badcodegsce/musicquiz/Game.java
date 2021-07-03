@@ -2,13 +2,38 @@ package com.renoirtan.badcodegsce.musicquiz;
 
 import java.util.Random;
 
+/**
+ * A game of `musicquiz`.
+ */
 public class Game {
+    /**
+     * A random number generator.
+     */
     protected Random rng;
+
+    /**
+     * The ID of the current game.
+     */
     protected int gameId;
+
+    /**
+     * A manager controlling and overseeing all of the players in the game.
+     */
     protected PlayersManager playersManager;
+
+    /**
+     * An object in charge of managing the songs used in the game.
+     */
     protected SongsManager songsManager;
+
+    /**
+     * A value telling the game whether it has ended.
+     */
     protected boolean gameOver;
 
+    /**
+     * A constructor for a new game.
+     */
     public Game() {
         this.rng = new Random();
         this.gameId = this.rng.nextInt();
@@ -16,28 +41,54 @@ public class Game {
         this.songsManager = new SongsManager(this.rng);
     }
 
+    /**
+     * Get the current game Id.
+     * 
+     * @return The game Id.
+     */
     public int getGameId() {
         return this.gameId;
     }
 
+    /**
+     * Get a reference to the PlayersManager object. From there, you can add
+     * players to the game.
+     * 
+     * @return The PlayersManager managing the players in this game.
+     */
     public PlayersManager getPlayersManager() {
         return this.playersManager;
     }
 
+    /**
+     * Get a reference to the SongsManager object which you can use to add
+     * songs.
+     * 
+     * @return The SongsManager managing the songs in this game.
+     */
     public SongsManager getSongsManager() {
         return this.songsManager;
     }
 
+    /**
+     * Check if the game is over.
+     * 
+     * @return true if the game has (or should have) ended.
+     */
     public boolean isGameOver() {
         return this.gameOver;
     }
 
+    /**
+     * Play the game using one song (and therefore one player).
+     * 
+     * @return true if game over.
+     * @throws Exception If something wrong happens, read the error messages.
+     */
     public boolean playOnce() throws Exception {
         Player player = this.playersManager.next();
         if (player == null) {
-            throw new NullPointerException(
-                "Received a null reference when getting the next player. This might be because there are no players in the game."
-            );
+            return true;
         }
         Song song = this.songsManager.next();
         if (song == null) {
@@ -54,6 +105,13 @@ public class Game {
         return this.isGameOver();
     }
 
+    /**
+     * Play the entire game until all players and/or songs have been exhausted
+     * from the manager objects.
+     * 
+     * @return The number of songs guessed correctly.
+     * @throws Exception If something went wrong.
+     */
     public int play() throws Exception {
         int songs = 0;
         while (!this.playOnce()) {

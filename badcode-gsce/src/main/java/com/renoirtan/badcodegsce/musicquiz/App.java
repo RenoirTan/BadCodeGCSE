@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 
 public class App {
     public static void main(String[] args) {
-        App.song(args);
+        App.game(args);
     }
 
     public static void game(String[] args) {

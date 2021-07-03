@@ -4,26 +4,49 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+/**
+ * A class that watches and cycles over the players in a game. It stores an
+ * array of player objects and the index of the player currently trying to
+ * guess the song.
+ */
 public class PlayersManager implements Iterator<Player> {
     protected ArrayList<Player> players;
     protected int index;
     protected int turns;
 
+    /**
+     * Initialises the PlayersManager object.
+     * 
+     * @return The PlayersManager object.
+     */
     private PlayersManager init() {
         this.index = 0;
         this.turns = 0;
         return this;
     }
 
+    /**
+     * The default constructor for PlayersManager.
+     */
     public PlayersManager() {
         this.players = new ArrayList<>();
         this.init();
     }
 
+    /**
+     * Construct a manager using a predefined list.
+     * 
+     * @param players The list of players.
+     */
     public PlayersManager(Collection<Player> players) {
         this(players.iterator());
     }
 
+    /**
+     * Construct a manager from an iterator of players.
+     * 
+     * @param players The iterator of players.
+     */
     public PlayersManager(Iterator<Player> players) {
         this.players = new ArrayList<>();
         while (players.hasNext()) {
@@ -32,18 +55,39 @@ public class PlayersManager implements Iterator<Player> {
         this.init();
     }
 
+    /**
+     * The number of players in the game.
+     * 
+     * @return The number of players in the game.
+     */
     public int playerCount() {
         return this.players.size();
     }
 
+    /**
+     * Check to see if there are no players in the game.
+     * 
+     * @return true if there are no players in the game.
+     */
     public boolean isEmpty() {
         return this.players.isEmpty();
     }
 
+    /**
+     * The number of turns that have already passed.
+     * 
+     * @return The number of turns done.
+     */
     public int turnsPassed() {
         return this.turns;
     }
 
+    /**
+     * Add a player to the game.
+     * 
+     * @param player The new player.
+     * @return Whether the player could be added.
+     */
     public boolean addPlayer(Player player) {
         if (this.players.contains(player)) {
             return false;
@@ -53,29 +97,66 @@ public class PlayersManager implements Iterator<Player> {
         }
     }
 
+    /**
+     * Add players from a list of players.
+     * 
+     * @param players The list of players.
+     * @return How many players could be added.
+     */
     public int addPlayers(Collection<Player> players) {
         return this.addPlayers(players.iterator());
     }
 
+    /**
+     * Add players from an iterator of players.
+     * 
+     * @param players The iterator of players.
+     * @return How many players could be added.
+     */
     public int addPlayers(Iterator<Player> players) {
         int added = 0;
         while (players.hasNext()) {
-            this.addPlayer(players.next());
-            added++;
+            if (this.addPlayer(players.next())) {
+                added++;
+            }
         }
         return added;
     }
 
+    /**
+     * Wrap the index arround if it exceeds the maximum indexable length.
+     * 
+     * @return The current PlayersManager object.
+     */
+    public PlayersManager wrapIndex() {
+        if (this.index >= this.playerCount()) {
+            this.index -= this.playerCount();
+        }
+        return this;
+    }
+
+    /**
+     * Get the index of the next player.
+     * 
+     * @return The index of the next player.
+     * 
+     * @throws Exception If there is nobody playing.
+     */
     public int nextIndex() throws Exception {
         if (this.isEmpty()) {
             throw new Exception("There are no players.");
         }
         int currIndex = this.index;
-        this.index++;
-        this.index %= this.playerCount();
+        this.wrapIndex();
         return currIndex;
     }
 
+    /**
+     * Give up the list of players and remove the pointer to the list of
+     * players in this object to prevent data races.
+     * 
+     * @return The list of players.
+     */
     protected ArrayList<Player> absolve() {
         ArrayList<Player> temp = this.players;
         this.players = new ArrayList<>();
