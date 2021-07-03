@@ -9,6 +9,10 @@ public class Song {
     protected String name;
     protected String artist;
 
+    public Song() {
+        this("Unknown", "Unknown");
+    }
+
     public Song(String name, String artist) {
         this.name = name;
         this.artist = artist;
