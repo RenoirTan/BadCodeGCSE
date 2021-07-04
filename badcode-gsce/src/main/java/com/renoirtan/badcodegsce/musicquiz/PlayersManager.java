@@ -124,6 +124,41 @@ public class PlayersManager implements Iterator<Player> {
     }
 
     /**
+     * Remove a player by their index in the list and return them. If the index
+     * is out of bounds, null is returned.
+     * 
+     * @param index The index of the player.
+     * @return The player that used to be at that index.
+     */
+    public Player removePlayer(int index) {
+        try {
+            return this.players.remove(index);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Remove the player the cursor (index) is currently pointing at.
+     * If there are no more players left, null is returned.
+     * 
+     * @return The current player.
+     */
+    public Player removeCurrentPlayer() {
+        return this.wrapIndex()
+            .removePlayer(this.getCurrentIndex());
+    }
+
+    /**
+     * The index of the current player.
+     * 
+     * @return The index of the current player.
+     */
+    public int getCurrentIndex() {
+        return this.index;
+    }
+
+    /**
      * Wrap the index arround if it exceeds the maximum indexable length.
      * 
      * @return The current PlayersManager object.
@@ -146,7 +181,7 @@ public class PlayersManager implements Iterator<Player> {
         if (this.isEmpty()) {
             throw new Exception("There are no players.");
         }
-        int currIndex = this.index;
+        int currIndex = this.index++;
         this.wrapIndex();
         return currIndex;
     }

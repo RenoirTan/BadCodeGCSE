@@ -156,7 +156,8 @@ public class Song {
     ) throws Exception {
         if (player.chancesLeft() == Player.getAllowedChances()) {
             out.println(String.format(
-                "Guess the name of the song:\n - First letter of name: %c\n - First letter of artist's name: %c",
+                "Player: %s\nGuess the name of the song:\n - First letter of name: %c\n - First letter of artist's name: %c",
+                player.getUsername(),
                 this.firstLetterOfName(),
                 this.firstLetterOfAuthor()
             ));

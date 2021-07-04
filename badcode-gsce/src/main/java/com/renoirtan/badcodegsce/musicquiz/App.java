@@ -1,5 +1,6 @@
 package com.renoirtan.badcodegsce.musicquiz;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -9,14 +10,25 @@ public class App {
         App.game(args);
     }
 
+    private static ArrayList<Player> createSomePlayers(int number) {
+        ArrayList<Player> players = new ArrayList<>();
+        for (int player = 1; player <= number; player++) {
+            players.add(new Player(
+                String.format("Player %d", player),
+                player
+            ));
+        }
+        return players;
+    }
+
     public static void game(String[] args) {
         Game game = new Game();
-        game.getPlayersManager().addPlayers(List.of(
-            new Player("me", 1)
-        ));
+        game.getPlayersManager().addPlayers(App.createSomePlayers(3));
         game.getSongsManager().addSongs(List.of(
-            new Song("songname", "songperson"),
-            new Song("another song", "ojfoefke")
+            new Song("DMCA", "City Animals"),
+            new Song("Oldwater", "20 Years of Winter"),
+            new Song("Forwards", "no idea really on how to modify this guy's name frick"),
+            new Song("Laughing outside the moon", "Ball")
         ));
         int songsPassed = 0;
         try {

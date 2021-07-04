@@ -105,6 +105,24 @@ public class Player {
     }
 
     /**
+     * Get the username of the player.
+     * 
+     * @return The username of the player.
+     */
+    public String getUsername() {
+        return this.username;
+    }
+
+    /**
+     * Get the ID of the player.
+     * 
+     * @return The ID of the player.
+     */
+    public int getAuthId() {
+        return this.authId;
+    }
+
+    /**
      * Get the player's current score.
      * 
      * @return The player's current score.

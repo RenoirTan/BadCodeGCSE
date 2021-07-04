@@ -76,7 +76,9 @@ public class Game {
      * @return true if the game has (or should have) ended.
      */
     public boolean isGameOver() {
-        return this.gameOver;
+        return this.gameOver ||
+            this.getSongsManager().isEmpty() ||
+            this.getPlayersManager().isEmpty();
     }
 
     /**
@@ -95,13 +97,27 @@ public class Game {
             return true;
         }
         if (song.quizPlayer(player)) {
-            System.out.println(
-                player.username + " messed up at " + song.toEnglish()
-            );
-            this.gameOver = true;
+            System.out.println(String.format(
+                "%s messed up at %s and has been eliminated.",
+                player.getUsername(),
+                song.toEnglish()
+            ));
+            this.getPlayersManager().removeCurrentPlayer();
         } else {
-            System.out.println(player.username + " guessed correctly.");
+            System.out.println("...");
         }
+        System.out.println(String.format(
+            "[Game.playOnce] is_game_over? %b",
+            this.isGameOver()
+        ));
+        System.out.println(String.format(
+            "[Game.playOnce] no_more_songs? %b",
+            this.getSongsManager().isEmpty()
+        ));
+        System.out.println(String.format(
+            "[Game.playOnce] no_more_players %b",
+            this.getPlayersManager().isEmpty()
+        ));
         return this.isGameOver();
     }
 
