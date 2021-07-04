@@ -84,7 +84,7 @@ public class Game {
     /**
      * Play the game using one song (and therefore one player).
      * 
-     * @return true if game over.
+     * @return If the player gets the song correct, return true. Otherwise, false.
      * @throws Exception If something wrong happens, read the error messages.
      */
     public boolean playOnce() throws Exception {
@@ -96,29 +96,46 @@ public class Game {
         if (song == null) {
             return true;
         }
-        if (song.quizPlayer(player)) {
+        /* System.out.println(String.format(
+            "    [Game.playOnce] player: %s",
+            player.toString()
+        ));
+        System.out.println(String.format(
+            "    [Game.playOnce] song: %s",
+            song.toString()
+        ));
+        System.out.println(String.format(
+            "    [Game.playOnce] players: %s",
+            this.getPlayersManager().players
+        ));
+        System.out.println(String.format(
+            "    [Game.playOnce] songs: %s",
+            this.getSongsManager().songs
+        )); */
+        boolean wrong = song.quizPlayer(player);
+        if (wrong) {
             System.out.println(String.format(
                 "%s messed up at %s and has been eliminated.",
                 player.getUsername(),
                 song.toEnglish()
             ));
-            this.getPlayersManager().removeCurrentPlayer();
+            this.getPlayersManager().removeLastPlayer();
         } else {
             System.out.println("...");
         }
-        System.out.println(String.format(
-            "[Game.playOnce] is_game_over? %b",
+        /* System.out.println(String.format(
+            "    [Game.playOnce] is_game_over? %b",
             this.isGameOver()
         ));
         System.out.println(String.format(
-            "[Game.playOnce] no_more_songs? %b",
+            "    [Game.playOnce] no_more_songs? %b",
             this.getSongsManager().isEmpty()
         ));
         System.out.println(String.format(
-            "[Game.playOnce] no_more_players %b",
+            "    [Game.playOnce] no_more_players %b",
             this.getPlayersManager().isEmpty()
-        ));
-        return this.isGameOver();
+        )); */
+        return !wrong;
     }
 
     /**
@@ -130,8 +147,10 @@ public class Game {
      */
     public int play() throws Exception {
         int songs = 0;
-        while (!this.playOnce()) {
-            songs++;
+        while (!this.isGameOver()) {
+            if (this.playOnce()) {
+                songs++;
+            }
         }
         return songs;
     }

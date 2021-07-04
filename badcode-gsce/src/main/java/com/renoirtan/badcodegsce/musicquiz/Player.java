@@ -99,7 +99,7 @@ public class Player {
     @Override
     public String toString() {
         return String.format(
-            "com.renoirtan.badcodegsce.musicquiz.Player < username = \"%s\" >",
+            "<Player username = \"%s\"/>",
             this.username
         );
     }

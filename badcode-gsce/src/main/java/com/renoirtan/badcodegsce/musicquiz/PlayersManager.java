@@ -139,14 +139,29 @@ public class PlayersManager implements Iterator<Player> {
     }
 
     /**
+     * Remove the last player.
+     * 
+     * @return The last player.
+     */
+    public Player removeLastPlayer() {
+        if (this.playerCount() == 1) {
+            this.index = 0;
+            return this.removePlayer(0);
+        }
+        this.index--;
+        return this.removePlayer(this.wrapIndex().getCurrentIndex());
+    }
+
+    /**
      * Remove the player the cursor (index) is currently pointing at.
      * If there are no more players left, null is returned.
      * 
      * @return The current player.
      */
     public Player removeCurrentPlayer() {
-        return this.wrapIndex()
-            .removePlayer(this.getCurrentIndex());
+        int currentIndex = this.wrapIndex().getCurrentIndex();
+        this.index -= 1;
+        return this.removePlayer(currentIndex);
     }
 
     /**
