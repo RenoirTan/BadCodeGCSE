@@ -1,7 +1,13 @@
 package com.renoirtan.badcodegsce.musicquiz;
 
+import java.io.Reader;
 import java.lang.Integer;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import com.renoirtan.badcodegsce.authentification.Hasher;
 
@@ -112,8 +118,53 @@ public class Player {
         }
     }
 
-    protected static ArrayList<PlayerImportBean> importPlayersFromFile() {
-        return new ArrayList<>();
+    /**
+     * <https://stackoverflow.com/questions/5554217/google-gson-deserialize-listclass-object-generic-type#5554296>
+     */
+    private static final Type listOfImported =
+        new TypeToken<ArrayList<PlayerImportBean>>() {}.getType();
+
+    /**
+     * Get a list of {@link PlayerImportBean}s from a json file.
+     * 
+     * @param reader An input file stream.
+     * @return The list of Player beans.
+     * @throws Exception If the Json deserialiser is unable to read the file
+     * provided.
+     */
+    public static ArrayList<PlayerImportBean> importBeansFromJson(
+        Reader reader
+    ) throws Exception {
+        return new Gson().fromJson(reader, listOfImported);
+    }
+
+    /**
+     * Convert an iterator of player beans into a list of players.
+     * 
+     * @param beans The iterator of beans.
+     * @return The list of players mapped from the iterator of beans.
+     */
+    public static ArrayList<Player> playersFromBeans(
+        Iterator<PlayerImportBean> beans
+    ) {
+        ArrayList<Player> players = new ArrayList<>();
+        beans.forEachRemaining(bean -> players.add(new Player(bean)));
+        return players;
+    }
+
+    /**
+     * Convert a json file into a list of players.
+     * 
+     * @param reader A input file stream containing the json object.
+     * @return The list of players.
+     * @throws Exception If the deserialiser is unable to read the json file.
+     */
+    public static ArrayList<Player> importPlayersFromJson(
+        Reader reader
+    ) throws Exception {
+        return Player.playersFromBeans(
+            Player.importBeansFromJson(reader).iterator()
+        );
     }
 
     /**
@@ -228,8 +279,9 @@ public class Player {
     @Override
     public String toString() {
         return String.format(
-            "<Player username = \"%s\"/>",
-            this.username
+            "<Player username=\"%s\" authId\"%s\"/>",
+            this.username,
+            this.authId
         );
     }
 
@@ -298,6 +350,21 @@ public class Player {
      */
     protected int chancesLeft() {
         return Player.getAllowedChances() - this.currentIncorrect;
+    }
+
+    /**
+     * Check if the password provided is correct for this user.
+     * 
+     * @param password The password.
+     * @return Whether the password is correct.
+     * @throws Exception If the hasher could not hash the username and/or
+     * password.
+     */
+    public boolean authenticate(String password) throws Exception {
+        return this.getAuthId() == Hasher.hashUsernameAndPassword(
+            this.getUsername(),
+            password
+        );
     }
 
     /**

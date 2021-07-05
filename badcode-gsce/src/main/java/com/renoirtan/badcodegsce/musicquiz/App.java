@@ -1,5 +1,6 @@
 package com.renoirtan.badcodegsce.musicquiz;
 
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,14 +12,9 @@ import static com.renoirtan.badcodegsce.musicquiz.Player.PlayerImportBean;
 
 public class App {
     public static void main(String[] args) {
-        String task = "";
-        try {
-            task = args[0];
-        } catch (Exception e) {
-            System.out.println("Using default musicquiz subcommand.");
-            task = "";
-        }
+        String task = args[0];
         if (task == null) {
+            System.out.println("Using default task.");
             task = "";
         }
         String[] taskArgs = Arrays.copyOfRange(args, 1, args.length + 1);
@@ -27,11 +23,21 @@ public class App {
             case "game":
                 App.game(taskArgs);
                 break;
+            case "debugGame":
+                App.debugGame(taskArgs);
+                break;
             case "deserializeSong":
                 App.deserializeSong(taskArgs);
                 break;
             case "newPlayer":
                 App.newPlayer(taskArgs);
+                break;
+            case "readPlayersJson":
+                try {
+                    App.readPlayersJson(taskArgs);
+                } catch (Exception e) {
+                    System.err.println(e);
+                }
                 break;
             default:
                 System.out.println("Unknown task requested.");
@@ -51,6 +57,44 @@ public class App {
     }
 
     public static void game(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Path to JSON file of players: ");
+        String playersFilePath = scanner.nextLine();
+        ArrayList<Player> players = null;
+        try {
+            FileReader jsonFile = new FileReader(playersFilePath);
+            players = Player.importPlayersFromJson(jsonFile);
+        } catch (Exception e) {
+            System.err.println(e);
+            scanner.close();
+            return;
+        }
+        System.out.print("Path to JSON file of songs: ");
+        String songsFilePath = scanner.nextLine();
+        ArrayList<Song> songs = null;
+        try {
+            FileReader jsonFile = new FileReader(songsFilePath);
+            songs = Song.importSongsFromJson(jsonFile);
+        } catch (Exception e) {
+            System.err.println(e);
+            scanner.close();
+            return;
+        }
+        scanner.close();
+        Game game = new Game();
+        game.getPlayersManager().addPlayers(players);
+        game.getSongsManager().addSongs(songs);
+        int songsPassed = 0;
+        try {
+            songsPassed = game.play();
+        } catch (Exception e) {
+            System.err.println(e);
+            return;
+        }
+        System.out.println(String.format("Songs guessed: %d", songsPassed));
+    }
+
+    public static void debugGame(String[] args) {
         Game game = new Game();
         game.getPlayersManager().addPlayers(App.createSomePlayers(3));
         game.getSongsManager().addSongs(List.of(
@@ -91,10 +135,23 @@ public class App {
                 username,
                 password
             );
-            System.out.println("You: " + bean.toString());
+            System.out.println(new Gson().toJson(bean));
         } catch (Exception e) {
             System.out.println("Failed to create user.");
             return;
         }
+    }
+
+    public static void readPlayersJson(String[] args) throws Exception {
+        String filePath = args[0];
+        Scanner scanner = new Scanner(System.in);
+        if (filePath == null) {
+            System.out.print("Path to players.json: ");
+            filePath = scanner.nextLine();
+        }
+        FileReader jsonFile = new FileReader(filePath);
+        ArrayList<Player> players = Player.importPlayersFromJson(jsonFile);
+        System.out.println(players);
+        scanner.close();
     }
 }

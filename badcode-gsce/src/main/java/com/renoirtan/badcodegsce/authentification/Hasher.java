@@ -34,7 +34,7 @@ public class Hasher {
         final String username,
         final String password
     ) throws Exception {
-        return new Hasher().hash(username).hash(password).toIntSafe();
+        return new Hasher().hash(username + password).toIntSafe();
     }
 
     public byte[] result;

@@ -1,10 +1,16 @@
 package com.renoirtan.badcodegsce.musicquiz;
 
 import java.io.PrintStream;
+import java.io.Reader;
 import java.io.Serializable;
 import java.lang.Integer;
 import java.lang.System;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Scanner;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * A representation of a song in this quiz. It consists of its name and the
@@ -12,6 +18,24 @@ import java.util.Scanner;
  * no problem being serialised and deserialised to JSON.
  */
 public class Song implements Serializable {
+
+    private static Type listOfImported =
+        new TypeToken<ArrayList<Song>>() {}.getType();
+
+    /**
+     * Get a list of songs from a json file.
+     * 
+     * @param reader The json file input stream.
+     * @return The list of songs.
+     * @throws Exception If the json deserialiser could not read the file.
+     */
+    public static ArrayList<Song> importSongsFromJson(Reader reader)
+    throws
+        Exception
+    {
+        return new Gson().fromJson(reader, listOfImported);
+    }
+
     /**
      * The name of the song, cannot be empty.
      */
@@ -134,7 +158,10 @@ public class Song implements Serializable {
      * @throws Exception If something wrong happens.
      */
     public boolean quizPlayerOnce(Player player) throws Exception {
-        return this.quizPlayerOnce(System.out, new Scanner(System.in), player);
+        Scanner scanner = new Scanner(System.in);
+        boolean result = this.quizPlayerOnce(System.out, scanner, player);
+        scanner.close();
+        return result;
     }
 
     /**
@@ -188,7 +215,10 @@ public class Song implements Serializable {
      * @throws Exception If something wrong happens.
      */
     public boolean quizPlayer(Player player) throws Exception {
-        return this.quizPlayer(System.out, new Scanner(System.in), player);
+        Scanner scanner = new Scanner(System.in);
+        boolean result = this.quizPlayer(System.out, scanner, player);
+        scanner.close();
+        return result;
     }
 
     /**
