@@ -1,6 +1,9 @@
 package com.renoirtan.badcodegsce.musicquiz;
 
 import java.lang.Integer;
+import java.util.ArrayList;
+
+import com.renoirtan.badcodegsce.authentification.Hasher;
 
 /**
  * A class representing a player.
@@ -8,6 +11,14 @@ import java.lang.Integer;
 public class Player {
 
     public static class PlayerImportBean {
+        public static PlayerImportBean newUser(
+            String username,
+            String password
+        ) throws Exception {
+            int authId = Hasher.hashUsernameAndPassword(username, password);
+            return new PlayerImportBean(username, authId);
+        }
+
         private String username;
         private int authId;
 
@@ -18,6 +29,15 @@ public class Player {
         public PlayerImportBean(String username, int authId) {
             this.username = username;
             this.authId = authId;
+        }
+
+        @Override
+        public String toString() {
+            return String.format(
+                "<PlayerImportBean username=\"%s\" authId=\"%d\"/>",
+                this.getUsername(),
+                this.getAuthId()
+            );
         }
 
         public String getUsername() {
@@ -90,6 +110,10 @@ public class Player {
         public void setIncorrect(int incorrect) {
             this.incorrect = incorrect;
         }
+    }
+
+    protected static ArrayList<PlayerImportBean> importPlayersFromFile() {
+        return new ArrayList<>();
     }
 
     /**
