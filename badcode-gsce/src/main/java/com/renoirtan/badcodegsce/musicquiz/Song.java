@@ -1,6 +1,7 @@
 package com.renoirtan.badcodegsce.musicquiz;
 
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.lang.Integer;
 import java.lang.System;
 import java.util.Scanner;
@@ -10,7 +11,7 @@ import java.util.Scanner;
  * name of the artist. Due to the simplicity of this class, it should have
  * no problem being serialised and deserialised to JSON.
  */
-public class Song {
+public class Song implements Serializable {
     /**
      * The name of the song, cannot be empty.
      */

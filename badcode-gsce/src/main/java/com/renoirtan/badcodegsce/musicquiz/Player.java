@@ -6,6 +6,92 @@ import java.lang.Integer;
  * A class representing a player.
  */
 public class Player {
+
+    public static class PlayerImportBean {
+        private String username;
+        private int authId;
+
+        public PlayerImportBean() {
+            this("Unknown", 0);
+        }
+
+        public PlayerImportBean(String username, int authId) {
+            this.username = username;
+            this.authId = authId;
+        }
+
+        public String getUsername() {
+            return this.username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public int getAuthId() {
+            return this.authId;
+        }
+
+        public void setAuthId(int authId) {
+            this.authId = authId;
+        }
+    }
+
+    public static class PlayerExportBean {
+        private String username;
+        private int authId;
+        private int score;
+        private int incorrect;
+
+        public PlayerExportBean() {
+            this("Unknown", 0, 0, 0);
+        }
+
+        public PlayerExportBean(
+            String username,
+            int authId,
+            int score,
+            int incorrect
+        ) {
+            this.username = username;
+            this.authId = authId;
+            this.score = score;
+            this.incorrect = incorrect;
+        }
+
+        public String getUsername() {
+            return this.username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public int getAuthId() {
+            return this.authId;
+        }
+
+        public void setAuthId(int authId) {
+            this.authId = authId;
+        }
+
+        public int getScore() {
+            return this.score;
+        }
+
+        public void setScore(int score) {
+            this.score = score;
+        }
+
+        public int getIncorrect() {
+            return this.incorrect;
+        }
+
+        public void setIncorrect(int incorrect) {
+            this.incorrect = incorrect;
+        }
+    }
+
     /**
      * The name of the player.
      */
@@ -80,6 +166,25 @@ public class Player {
         this.username = username;
         this.authId = authId;
         this.init();
+    }
+
+    public Player(PlayerImportBean bean) {
+        this.username = bean.getUsername();
+        this.authId = bean.getAuthId();
+    }
+
+    /**
+     * Convert the data in this player into a JavaBean.
+     * 
+     * @return A player export bean.
+     */
+    public PlayerExportBean export() {
+        return new PlayerExportBean(
+            this.getUsername(),
+            this.getAuthId(),
+            this.getScore(),
+            this.getTotalIncorrect()
+        );
     }
 
     @Override
