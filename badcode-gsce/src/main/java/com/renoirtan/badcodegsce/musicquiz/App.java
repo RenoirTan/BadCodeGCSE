@@ -58,6 +58,31 @@ public class App {
 
     public static void game(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        try {
+            System.out.print("Path to JSON file of players: ");
+            String playersFilePath = scanner.nextLine();
+            FileReader jsonFile = new FileReader(playersFilePath);
+            ArrayList<Player> players = Player.importPlayersFromJson(jsonFile);
+
+            System.out.print("Path to JSON file of songs: ");
+            String songsFilePath = scanner.nextLine();
+            jsonFile = new FileReader(songsFilePath);
+            ArrayList<Song> songs = Song.importSongsFromJson(jsonFile);
+
+            Game game = new Game();
+            game.getPlayersManager().addPlayers(players);
+            game.getSongsManager().addSongs(songs);
+            int songsPassed = game.play();
+            System.out.println(String.format("Songs guessed: %d", songsPassed));
+        } catch (final Exception e) {
+            System.out.println(e);
+        } finally {
+            scanner.close();
+        }
+    }
+
+    public static void _game(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Path to JSON file of players: ");
         String playersFilePath = scanner.nextLine();
         ArrayList<Player> players = null;
@@ -80,7 +105,6 @@ public class App {
             scanner.close();
             return;
         }
-        scanner.close();
         Game game = new Game();
         game.getPlayersManager().addPlayers(players);
         game.getSongsManager().addSongs(songs);
@@ -89,9 +113,11 @@ public class App {
             songsPassed = game.play();
         } catch (Exception e) {
             System.err.println(e);
+            scanner.close();
             return;
         }
         System.out.println(String.format("Songs guessed: %d", songsPassed));
+        scanner.close();
     }
 
     public static void debugGame(String[] args) {

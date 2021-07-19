@@ -192,6 +192,8 @@ public class Song implements Serializable {
         }
         out.println(String.format("Chances left: %d", player.chancesLeft()));
         out.print("Guess> ");
+        // Wait for user input
+        while (!scanner.hasNextLine()) {}
         String guess = scanner.nextLine().trim();
         if (this.checkGuess(guess)) {
             out.println("You guessed correctly!");
