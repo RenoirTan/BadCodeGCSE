@@ -3,6 +3,7 @@ package com.renoirtan.badcodegsce.musicquiz;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.io.Serializable;
+import java.lang.Character;
 import java.lang.Integer;
 import java.lang.System;
 import java.lang.reflect.Type;
@@ -149,6 +150,60 @@ public class Song implements Serializable {
     }
 
     /**
+     * Get the first letter of each word in this song as an array.
+     * 
+     * @return The first letter of each word in this song.
+     * @throws Exception If an unhandled error occurs.
+     */
+    public ArrayList<Character> firstLetterOfEachWordInName()
+    throws Exception {
+        ArrayList<Character> letters = new ArrayList<>();
+        String[] words = this.name.split(" ");
+        for (String word : words) {
+            if (word.length() == 0) {
+                continue;
+            } else {
+                letters.add(word.charAt(0));
+            }
+        }
+        return letters;
+    }
+
+    /**
+     * Get the first letter of each word in the song's name as a
+     * space-separated string.
+     * 
+     * @return The sequence of first letters.
+     * @throws Exception If an unexpected exception occurs.
+     */
+    public String formatFirstLetterOfEachWordInName() throws Exception {
+        String result = "";
+        ArrayList<Character> letters = this.firstLetterOfEachWordInName();
+        for (Character letter : letters) {
+            if (result != "") {
+                result += " ";
+            }
+            result += letter;
+        }
+        return result;
+    }
+
+    /**
+     * Get a hint for this song as a string.
+     * 
+     * @return The hint for this song.
+     * @throws Exception Any unhandled exception.
+     * @throws IndexOutOfBoundsException Any unhandled exception.
+     */
+    public String getPrompt() throws Exception, IndexOutOfBoundsException {
+        return String.format(
+            " - First letter of each word in the song: %s\n - Artist: %s",
+            this.formatFirstLetterOfEachWordInName(),
+            this.getArtist()
+        );
+    }
+
+    /**
      * Ask the player to guess the name of this song.
      * 
      * @param player The player to ask.
@@ -184,10 +239,9 @@ public class Song implements Serializable {
     ) throws Exception {
         if (player.chancesLeft() == Player.getAllowedChances()) {
             out.println(String.format(
-                "Player: %s\nGuess the name of the song:\n - First letter of name: %c\n - First letter of artist's name: %c",
+                "Player: %s\nGuess the name of the song:\n%s\n",
                 player.getUsername(),
-                this.firstLetterOfName(),
-                this.firstLetterOfAuthor()
+                this.getPrompt()
             ));
         }
         out.println(String.format("Chances left: %d", player.chancesLeft()));
